@@ -112,6 +112,6 @@ If you use SuMa++, please cite the corresponding [paper](http://www.ipb.uni-bonn
 
 ## License
 
-Copyright 2019, Xieyuanli Chen, Andres Milioto, Cyrill Stachniss, University of Bonn.
+Copyright 2019, Xieyuanli Chen, Andres Milioto, Jens Behley, Cyrill Stachniss, University of Bonn.
 
 This project is free software made available under the MIT License. For details see the LICENSE file.
