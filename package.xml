@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>rangenet_lib</name>
+  <version>0.1.0</version>
+  <description>Core library for Segmentation using rangenet</description>
+  <maintainer email="xieyuanli.chen@igg.uni-bonn.de">Xieyuanli Chen</maintainer>
+  <author email="amilioto@uni-bonn.de">Andres Milioto</author>
+  <license>MIT</license>
+
+  <!-- Dependencies -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+</package>
