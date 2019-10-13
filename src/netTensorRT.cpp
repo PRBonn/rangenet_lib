@@ -190,11 +190,11 @@ std::vector<std::vector<float>> NetTensorRT::doProjection(const std::vector<floa
   std::vector<std::vector<float>> range_image(_img_w * _img_h);
 
   // zero initialize
-  for (int i = 0; i < range_image.size(); ++i) {
+  for (uint32_t i = 0; i < range_image.size(); ++i) {
       range_image[i] = invalid_input;
   }
 
-  for (int i = 0; i < inputs.size(); ++i) {
+  for (uint32_t i = 0; i < inputs.size(); ++i) {
     range_image[int(sorted_proj_ys[i] * _img_w + sorted_proj_xs[i])] = inputs[i];
   }
 
@@ -238,7 +238,7 @@ std::vector<std::vector<float>> NetTensorRT::infer(const std::vector<float>& sca
   bool all_zeros = false;
   std::vector<int> invalid_idxs;
 
-  for (int pixel_id = 0; pixel_id < projected_data.size(); pixel_id++){
+  for (uint32_t pixel_id = 0; pixel_id < projected_data.size(); pixel_id++){
     // check if the pixel is invalid
     all_zeros = std::all_of(projected_data[pixel_id].begin(), projected_data[pixel_id].end(), [](int i) { return i==0.0f; });
     if (all_zeros) {
@@ -325,7 +325,7 @@ std::vector<std::vector<float>> NetTensorRT::infer(const std::vector<float>& sca
 
   // unprojection, labelling raw point clouds
   std::vector<std::vector<float>> semantic_scan;
-  for (int i = 0 ; i < num_points; i++) {
+  for (uint32_t i = 0 ; i < num_points; i++) {
     semantic_scan.push_back(range_image[proj_ys[i] * _img_w + proj_xs[i]]);
   }
 

@@ -145,7 +145,7 @@ std::vector<cv::Vec3b> Net::getLabels(const std::vector<std::vector<float>>& sem
 
   for (uint32_t i = 0; i < num_points; ++i) {
     labels_prob[i] = 0;
-    for (uint32_t j = 0; j < _n_classes; ++j)
+    for (int32_t j = 0; j < _n_classes; ++j)
     {
       if (labels_prob[i] <= semantic_scan[i][j])
       {
