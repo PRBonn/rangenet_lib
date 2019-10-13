@@ -22,7 +22,7 @@ find_package(catkin REQUIRED
 )
 
 # get opencv (required)
-find_package(OpenCV)
+find_package(OpenCV REQUIRED core viz)
 if(OpenCV_FOUND)
   message("OpenCV Libs: ${OpenCV_LIBS}")
   set(OpenCV_LIBRARIES ${OpenCV_LIBS})
