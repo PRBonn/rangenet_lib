@@ -13,6 +13,7 @@
 #include <fstream>
 #include <ios>
 #include <chrono>
+#include <numeric>
 #include "net.hpp"
 
 #define MAX_WORKSPACE_SIZE \
@@ -98,10 +99,10 @@ class NetTensorRT : public Net {
 
     // initialize original index locations
     std::vector<size_t> idx(v.size());
-    iota(idx.begin(), idx.end(), 0);
+    std::iota(idx.begin(), idx.end(), 0);
 
     // sort indexes based on comparing values in v. >: decrease <: increase
-    sort(idx.begin(), idx.end(),
+    std::sort(idx.begin(), idx.end(),
          [&v](size_t i1, size_t i2) {return v[i1] > v[i2];});
 
     return idx;
