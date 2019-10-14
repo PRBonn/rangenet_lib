@@ -167,19 +167,23 @@ option(EXAMPLE "Building example" ON)
 
 if(EXAMPLE)
   message("Building example...")
-  add_executable(infer example/infer.cpp)
-  target_link_libraries(infer   rangenet_lib
-                                ${catkin_LIBRARIES}
-                                ${OpenCV_LIBS}
-                                ${Boost_LIBRARIES}
-                                ${YAML_CPP_LIBRARIES}
-                                ${TENSORRT_LIBRARIES}
-                                )
-  install(
-    TARGETS
-    infer
-    DESTINATION bin/
-  )
+  if(OpenCV_FOUND)
+      add_executable(infer example/infer.cpp)
+      target_link_libraries(infer   rangenet_lib
+                                    ${catkin_LIBRARIES}
+                                    ${OpenCV_LIBS}
+                                    ${Boost_LIBRARIES}
+                                    ${YAML_CPP_LIBRARIES}
+                                    ${TENSORRT_LIBRARIES}
+                                    )
+      install(
+        TARGETS
+        infer
+        DESTINATION bin/
+      )
+  else()
+      message(FATAL_ERROR "OpenCV NOT FOUND, failed to build the example!\n")
+  endif()
 else()
   message("Not building example.")
 endif()

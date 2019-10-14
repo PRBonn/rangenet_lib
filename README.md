@@ -62,17 +62,20 @@ We use the catkin tool to build the library.
 
 #### Run the demo
 
-To run the demo, you need a pre-trained model, which can be downloaded here, [model](http://www.ipb.uni-bonn.de/html/projects/semantic_suma/darknet53.tar.gz).
+To run the demo, you need a pre-trained model, which can be downloaded here, [model](http://www.ipb.uni-bonn.de/html/projects/semantic_suma/darknet53.tar.gz). 
+
+A single LiDAR scan for running the demo, you could find in the example folder `example/000000.bin`. For more LiDAR data, you could download from [KITTI odometry dataset](http://www.cvlibs.net/datasets/kitti/eval_odometry.php).
 
 For more details about how to train and evaluate a model, please refer to [LiDAR-Bonnetal](https://github.com/PRBonn/lidar-bonnetal).
 
 To infer a single LiDAR scan and visualize the semantic point cloud:
 
   ```sh
+  # go to the root path of the catkin workspace
+  $ cd ~/catkin_ws
   # use --verbose or -v to get verbose mode
   $ ./devel/lib/rangenet_lib/infer -h # help
   $ ./devel/lib/rangenet_lib/infer -p /path/to/the/pretrained/model -s /path/to/the/scan.bin --verbose
-
   ```
 
 **Notice**: for the first time running, it will take several minutes to generate a `.trt` model for C++ interface.
