@@ -2,7 +2,7 @@
 
 This repository contains simple usage explanations of how the RangeNet++ inference works with the TensorRT and C++ interface.
 
-Developed by [Xieyuanli Chen](http://www.ipb.uni-bonn.de/people/xieyuanli-chen/) and [Andres Milioto](http://www.ipb.uni-bonn.de/people/andres-milioto/).
+Developed by [Xieyuanli Chen](http://www.ipb.uni-bonn.de/people/xieyuanli-chen/), [Andres Milioto](http://www.ipb.uni-bonn.de/people/andres-milioto/) and [Jens Behley](http://www.ipb.uni-bonn.de/people/jens-behley/).
 
 For more details about RangeNet++, one could find in [LiDAR-Bonnetal](https://github.com/PRBonn/lidar-bonnetal).
 
@@ -18,7 +18,7 @@ For more details about RangeNet++, one could find in [LiDAR-Bonnetal](https://gi
 ##### System dependencies
 First you need to install the nvidia driver and CUDA.
 
-- CUDA Installation guide: [link](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
+- CUDA Installation guide: [Link](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
 
 - Then you can do the other dependencies:
 
@@ -44,7 +44,7 @@ First you need to install the nvidia driver and CUDA.
   
 ##### TensorRT
 
-In order to infer with TensorRT during inference with the C++ libraries:
+In order to infer with TensorRT (>=5.0) during inference with the C++ libraries:
 
 - Install TensorRT: [Link](https://developer.nvidia.com/tensorrt).
 
