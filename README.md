@@ -55,7 +55,7 @@ We use the catkin tool to build the library.
   $ mkdir -p ~/catkin_ws/src
   $ cd ~/catkin_ws/src
   $ git clone https://github.com/ros/catkin.git 
-  $ git clone https://gitlab.ipb.uni-bonn.de/xieyuanli.chen/rangenet_lib.git
+  $ git clone https://github.com/PRBonn/rangenet_lib.git
   $ cd .. && catkin init
   $ catkin build rangenet_lib
   ```
