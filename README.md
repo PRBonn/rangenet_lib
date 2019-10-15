@@ -24,12 +24,9 @@ First you need to install the nvidia driver and CUDA.
 
   ```sh
   $ sudo apt-get update 
-  $ sudo apt-get install -yqq  build-essential ninja-build \
-    python3-dev python3-pip apt-utils curl git cmake unzip autoconf autogen \
-    libtool mlocate zlib1g-dev python3-numpy python3-wheel wget \
-    software-properties-common openjdk-8-jdk libpng-dev  \
-    libxft-dev ffmpeg libboost-all-dev \
-    libyaml-cpp-dev
+  $ sudo apt-get install -yqq  build-essential  \
+    python3-dev python3-pip apt-utils git cmake  \
+    libboost-all-dev libyaml-cpp-dev libopencv-dev\
   $ sudo updatedb
   ```
   
@@ -39,7 +36,7 @@ First you need to install the nvidia driver and CUDA.
 
   ```sh
   $ sudo apt install python-empy
-  $ sudo pip install catkin_tools trollius # for build
+  $ sudo pip install catkin_tools trollius numpy
   ```
   
 ##### TensorRT
