@@ -24,10 +24,7 @@ First you need to install the nvidia driver and CUDA.
 
   ```sh
   $ sudo apt-get update 
-  $ sudo apt-get install -yqq  build-essential  \
-    python3-dev python3-pip apt-utils git cmake  \
-    libboost-all-dev libyaml-cpp-dev libopencv-dev\
-  $ sudo updatedb
+  $ sudo apt-get install -yqq  build-essential python3-dev python3-pip apt-utils git cmake libboost-all-dev libyaml-cpp-dev libopencv-dev
   ```
   
 ##### Python dependencies
