@@ -17,19 +17,7 @@ set (CMAKE_CXX_STANDARD 11)
 message("Build type: ${CMAKE_BUILD_TYPE}")
 
 ## Find catkin macros and libraries
-find_package(catkin REQUIRED
-  COMPONENTS
-)
-
-# get opencv (required)
-find_package(OpenCV REQUIRED core viz)
-if(OpenCV_FOUND)
-  message("OpenCV Libs: ${OpenCV_LIBS}")
-  set(OpenCV_LIBRARIES ${OpenCV_LIBS})
-  message("OpenCV Headers: ${OpenCV_INCLUDE_DIRS}\n")
-else()
-  message(FATAL_ERROR "OpenCV NOT FOUND\n")
-endif()
+find_package(catkin REQUIRED)
 
 # libyaml-cpp (required)
 find_package (yaml-cpp)
@@ -84,7 +72,6 @@ catkin_package(
     rangenet_lib
   CATKIN_DEPENDS
   DEPENDS
-    OpenCV
     YAML_CPP
   CFG_EXTRAS
     tensorrt-config.cmake
@@ -104,7 +91,6 @@ include_directories(
   include
   ${rangenet_external_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
-  ${OpenCV_INCLUDE_DIRS}
   ${YAML_CPP_INCLUDE_DIR}
   ${TENSORRT_INCLUDE_DIRS}
 )
@@ -136,7 +122,6 @@ add_library(rangenet_lib ${rangenet_lib_SOURCES})
 target_link_libraries(rangenet_lib
     rangenet_external
     ${catkin_LIBRARIES}
-    ${OpenCV_LIBS}
     ${YAML_CPP_LIBRARIES}
     ${TENSORRT_LIBRARIES})
 
@@ -166,23 +151,29 @@ install(
 option(EXAMPLE "Building example" ON)
 
 if(EXAMPLE)
-  message("Building example...")
+
+  # get opencv (required)
+  find_package(OpenCV COMPONENTS core viz)
   if(OpenCV_FOUND)
-      add_executable(infer example/infer.cpp)
-      target_link_libraries(infer   rangenet_lib
-                                    ${catkin_LIBRARIES}
-                                    ${OpenCV_LIBS}
-                                    ${Boost_LIBRARIES}
-                                    ${YAML_CPP_LIBRARIES}
-                                    ${TENSORRT_LIBRARIES}
-                                    )
-      install(
-        TARGETS
-        infer
-        DESTINATION bin/
-      )
-  else()
-      message(FATAL_ERROR "OpenCV NOT FOUND, failed to build the example!\n")
+    message("Building example...")
+    message("OpenCV Libs: ${OpenCV_LIBS}")
+    set(OpenCV_LIBRARIES ${OpenCV_LIBS})
+    message("OpenCV Headers: ${OpenCV_INCLUDE_DIRS}\n")
+
+    include_directories(${OpenCV_INCLUDE_DIRS})
+    add_executable(infer example/infer.cpp)
+    target_link_libraries(infer   rangenet_lib
+                                  ${catkin_LIBRARIES}
+                                  ${OpenCV_LIBRARIES}
+                                  ${Boost_LIBRARIES}
+                                  ${YAML_CPP_LIBRARIES}
+                                  ${TENSORRT_LIBRARIES}
+                                  )
+    install(
+      TARGETS
+      infer
+      DESTINATION bin/
+    )
   endif()
 else()
   message("Not building example.")
