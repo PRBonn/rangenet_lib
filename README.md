@@ -41,7 +41,7 @@ First you need to install the nvidia driver and CUDA.
 In order to infer with TensorRT during inference with the C++ libraries:
 
 - Install TensorRT: [Link](https://developer.nvidia.com/tensorrt).
-- Our code now only works with **TensorRT version 5**.
+- Our code now only works with **TensorRT version 5** (Note that you need at least version 5.1.0).
 
 #### Build the library
 We use the catkin tool to build the library.
