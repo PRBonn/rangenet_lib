@@ -41,7 +41,8 @@ First you need to install the nvidia driver and CUDA.
 In order to infer with TensorRT during inference with the C++ libraries:
 
 - Install TensorRT: [Link](https://developer.nvidia.com/tensorrt).
-- Our code now only works with **TensorRT version 5** (Note that you need at least version 5.1.0).
+- Our code and the pretrained model now only works with **TensorRT version 5** (Note that you need at least version 5.1.0).
+- To make the code also works for higher versions of TensorRT, one could have a look at [here](https://github.com/PRBonn/rangenet_lib/issues/9).
 
 #### Build the library
 We use the catkin tool to build the library.
