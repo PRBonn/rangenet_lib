@@ -84,9 +84,11 @@ You could find more implementation details in [SuMa++](https://github.com/PRBonn
 
 #### Generate probabilities over semantic classes for OverlapNet
 OverlapNet is a LiDAR-based loop closure detection method, which uses multiple cues generated from LiDAR scans.
+
 More information about our OverlapNet could be found [here](https://github.com/PRBonn/OverlapNet).
 
 One could use our rangenet_lib to generate probabilities over semantic classes for training OverlapNet.
+
 More detailed steps and discussion could be found [here](https://github.com/PRBonn/rangenet_lib/issues/31).
 
 ## Citations
