@@ -31,6 +31,12 @@ Net::Net(const std::string& model_path)
     throw std::runtime_error("Can't open cfg.yaml from " + arch_cfg_path);
   }
 
+  // Assign fov_up and fov_down from arch_cfg
+  _fov_up = arch_cfg["dataset"]["sensor"]["fov_up"].as
+  <double>();
+  _fov_down = arch_cfg["dataset"]["sensor"]["fov_down"].as
+  <double>();
+
   std::string data_cfg_path = _model_path + "/data_cfg.yaml";
   try {
     data_cfg = YAML::LoadFile(data_cfg_path);
