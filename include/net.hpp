@@ -99,6 +99,8 @@ class Net {
   std::vector<float> _img_means, _img_stds; // mean and std per channel
   // problem properties
   int32_t _n_classes;  // number of classes to differ from
+  // sensor properties
+  double _fov_up, _fov_down; // field of view up and down in radians
 
   // config
   YAML::Node data_cfg;  // yaml nodes with configuration from training
