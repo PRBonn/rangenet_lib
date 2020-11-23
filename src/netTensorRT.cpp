@@ -449,12 +449,12 @@ void NetTensorRT::deserializeEngine(const std::string& engine_path) {
             << std::endl;
 
   // because I use onnx-tensorRT i have to use their plugin factory
-  nvonnxparser::IPluginFactory* plug_fact =
-      nvonnxparser::createPluginFactory(_gLogger);
+  // nvonnxparser::IPluginFactory* plug_fact =
+  //     nvonnxparser::createPluginFactory(_gLogger);
 
   // Now deserialize
-  _engine = infer->deserializeCudaEngine(modelMem, modelSize, plug_fact);
-
+  _engine = infer->deserializeCudaEngine(modelMem, modelSize, nullptr);
+  infer->destroy();
   free(modelMem);
   if (_engine) {
     std::cerr << "Created engine!" << std::endl;
@@ -500,19 +500,41 @@ void NetTensorRT::generateEngine(const std::string& onnx_path) {
   // create inference builder
   IBuilder* builder = createInferBuilder(_gLogger);
 
+  if (builder)
+  {
+    std::cout << "create builder succeed!\n"
+              << std::endl;
+  }
+  else
+  {
+    throw std::runtime_error("ERROR: could not create builder.");
+  }
+  // BATCH SIZE IS ALWAYS ONE
+  builder->setMaxBatchSize(1);
+  IBuilderConfig *builderconfig = builder->createBuilderConfig();
+  if (builderconfig)
+  {
+    std::cout << "create builderconfig succeed!\n"
+              << std::endl;
+  }
+  else
+  {
+    throw std::runtime_error("ERROR: could not create builderconfig.");
+  }
   // set optimization parameters here
   // CAN I DO HALF PRECISION (and report to user)
   std::cout << "Platform ";
   if (builder->platformHasFastFp16()) {
     std::cout << "HAS ";
-    builder->setFp16Mode(true);
+    // builder->setFp16Mode(true);
+    builderconfig->setFlag(BuilderFlag::kFP16);
   } else {
     std::cout << "DOESN'T HAVE ";
-    builder->setFp16Mode(false);
+    // builder->setFp16Mode(false);
   }
   std::cout << "fp16 support." << std::endl;
   // BATCH SIZE IS ALWAYS ONE
-  builder->setMaxBatchSize(1);
+  // builder->setMaxBatchSize(1);
 
 // if using DLA, set the desired core before deserialization occurs
 #if NV_TENSORRT_MAJOR >= 5 &&                             \
@@ -534,7 +556,9 @@ void NetTensorRT::generateEngine(const std::string& onnx_path) {
 #endif
 
   // create a network builder
-  INetworkDefinition* network = builder->createNetwork();
+  // INetworkDefinition* network = builder->createNetwork();
+  const auto explicitBatch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
+      INetworkDefinition *network = builder->createNetworkV2(explicitBatch);
 
   // generate a parser to get weights from onnx file
   nvonnxparser::IParser* parser =
@@ -553,10 +577,12 @@ void NetTensorRT::generateEngine(const std::string& onnx_path) {
   for (unsigned long ws_size = MAX_WORKSPACE_SIZE;
        ws_size >= MIN_WORKSPACE_SIZE; ws_size /= 2) {
     // set size
-    builder->setMaxWorkspaceSize(ws_size);
+    // builder->setMaxWorkspaceSize(ws_size);
+    builderconfig->setMaxWorkspaceSize(ws_size);
 
     // try to build
-    _engine = builder->buildCudaEngine(*network);
+    // _engine = builder->buildCudaEngine(*network);
+    _engine = builder->buildEngineWithConfig(*network, *builderconfig);
     if (!_engine) {
       std::cerr << "Failure creating engine from ONNX model" << std::endl
                 << "Current trial size is " << ws_size << std::endl;
@@ -567,7 +593,10 @@ void NetTensorRT::generateEngine(const std::string& onnx_path) {
       break;
     }
   }
-
+  builder->destroy();
+  builderconfig->destroy();
+  parser->destroy();
+  network->destroy();
   // final check
   if (!_engine) {
     throw std::runtime_error("ERROR: could not create engine from ONNX.");
