@@ -2,7 +2,7 @@
 
 This repository contains simple usage explanations of how the RangeNet++ inference works with the TensorRT and C++ interface.
 
-Developed by [Xieyuanli Chen](http://www.ipb.uni-bonn.de/people/xieyuanli-chen/), [Andres Milioto](http://www.ipb.uni-bonn.de/people/andres-milioto/) and [Jens Behley](http://www.ipb.uni-bonn.de/people/jens-behley/).
+Developed by [Xieyuanli Chen](https://www.ipb.uni-bonn.de/people/xieyuanli-chen/), [Andres Milioto](https://www.ipb.uni-bonn.de/people/andres-milioto/) and [Jens Behley](https://www.ipb.uni-bonn.de/people/jens-behley/).
 
 For more details about RangeNet++, one could find in [LiDAR-Bonnetal](https://github.com/PRBonn/lidar-bonnetal).
 
@@ -58,9 +58,9 @@ We use the catkin tool to build the library.
 
 #### Run the demo
 
-To run the demo, you need a pre-trained model, which can be downloaded here, [model](http://www.ipb.uni-bonn.de/html/projects/semantic_suma/darknet53.tar.gz). 
+To run the demo, you need a pre-trained model, which can be downloaded here, [model](https://www.ipb.uni-bonn.de/html/projects/semantic_suma/darknet53.tar.gz). 
 
-A single LiDAR scan for running the demo, you could find in the example folder `example/000000.bin`. For more LiDAR data, you could download from [KITTI odometry dataset](http://www.cvlibs.net/datasets/kitti/eval_odometry.php).
+A single LiDAR scan for running the demo, you could find in the example folder `example/000000.bin`. For more LiDAR data, you could download from [KITTI odometry dataset](https://www.cvlibs.net/datasets/kitti/eval_odometry.php).
 
 For more details about how to train and evaluate a model, please refer to [LiDAR-Bonnetal](https://github.com/PRBonn/lidar-bonnetal).
 
@@ -93,7 +93,7 @@ More detailed steps and discussion could be found [here](https://github.com/PRBo
 
 ## Citations
 
-If you use this library for any academic work, please cite the original [paper](http://www.ipb.uni-bonn.de/wp-content/papercite-data/pdf/milioto2019iros.pdf).
+If you use this library for any academic work, please cite the original [paper](https://www.ipb.uni-bonn.de/wp-content/papercite-data/pdf/milioto2019iros.pdf).
 
 ```
 @inproceedings{milioto2019iros,
@@ -106,7 +106,7 @@ If you use this library for any academic work, please cite the original [paper](
 }
 ```
 
-If you use SuMa++, please cite the corresponding [paper](http://www.ipb.uni-bonn.de/wp-content/papercite-data/pdf/chen2019iros.pdf):
+If you use SuMa++, please cite the corresponding [paper](https://www.ipb.uni-bonn.de/wp-content/papercite-data/pdf/chen2019iros.pdf):
 
 ```
 @inproceedings{chen2019iros, 
