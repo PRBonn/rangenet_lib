@@ -120,8 +120,8 @@ NetTensorRT::~NetTensorRT() {
  * @return     Projected LiDAR scans, with size of (_img_h * _img_w, _img_d)
  */
 std::vector<std::vector<float>> NetTensorRT::doProjection(const std::vector<float>& scan, const uint32_t& num_points){
-  float fov_up = 3.0 / 180.0 * M_PI;    // field of view up in radians
-  float fov_down = -25.0 / 180.0 * M_PI;  // field of view down in radians
+  float fov_up = _fov_up / 180.0 * M_PI;    // field of view up in radians
+  float fov_down = _fov_down / 180.0 * M_PI;  // field of view down in radians
   float fov = std::abs(fov_down) + std::abs(fov_up); // get field of view total in radians
 
   std::vector<float> ranges;
