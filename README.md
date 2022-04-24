@@ -77,12 +77,12 @@ To infer a single LiDAR scan and visualize the semantic point cloud:
 **Notice**: for the first time running, it will take several minutes to generate a `.trt` model for C++ interface.
 
 ## Applications
-#### Run SuMa++: Efficient LiDAR-based Semantic SLAM
+#### Efficient LiDAR-based Semantic SLAM
 Using rangenet_lib, we built a LiDAR-based Semantic SLAM system, called SuMa++.
 
 You could find more implementation details in [SuMa++](https://github.com/PRBonn/semantic_suma/).
 
-#### Generate probabilities over semantic classes for OverlapNet
+#### LiDAR-based Semantic Loop Closing
 OverlapNet is a LiDAR-based loop closure detection method, which uses multiple cues generated from LiDAR scans.
 
 More information about our OverlapNet could be found [here](https://github.com/PRBonn/OverlapNet).
