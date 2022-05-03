@@ -8,7 +8,7 @@
 // For plugin factory
 #include <NvInfer.h>
 #include <NvOnnxParser.h>
-#include <NvOnnxParserRuntime.h>
+// #include <NvOnnxParserRuntime.h>
 #include <cuda_runtime.h>
 #include <fstream>
 #include <ios>
