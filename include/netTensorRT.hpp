@@ -8,7 +8,7 @@
 // For plugin factory
 #include <NvInfer.h>
 #include <NvOnnxParser.h>
-#include <NvOnnxParserRuntime.h>
+//#include <NvOnnxParserRuntime.h>
 #include <cuda_runtime.h>
 #include <fstream>
 #include <ios>
@@ -20,7 +20,7 @@
   (1UL << 33)  // gpu workspace size (8gb is pretty good)
 #define MIN_WORKSPACE_SIZE (1UL << 20)  // gpu workspace size (pretty bad)
 
-#define DEVICE_DLA_0 0  // jetson DLA 0 enabled
+#define DEVICE_DLA_0 1  // jetson DLA 0 enabled
 #define DEVICE_DLA_1 0  // jetson DLA 1 enabled
 
 using namespace nvinfer1;  // I'm taking a liberty because the code is
@@ -42,23 +42,23 @@ namespace segmentation {
 class Logger : public ILogger {
  public:
   void set_verbosity(bool verbose) { _verbose = verbose; }
-  void log(Severity severity, const char* msg) override {
+  void log(Severity severity, const char* msg) noexcept {
     if (_verbose) {
       switch (severity) {
         case Severity::kINTERNAL_ERROR:
-          std::cerr << "INTERNAL_ERROR: ";
+          std::cout << "INTERNAL_ERROR: ";
           break;
         case Severity::kERROR:
-          std::cerr << "ERROR: ";
+          std::cout << "ERROR: ";
           break;
         case Severity::kWARNING:
-          std::cerr << "WARNING: ";
+          std::cout << "WARNING: ";
           break;
         case Severity::kINFO:
-          std::cerr << "INFO: ";
+          std::cout << "INFO: ";
           break;
         default:
-          std::cerr << "UNKNOWN: ";
+          std::cout << "UNKNOWN: ";
           break;
       }
       std::cout << msg << std::endl;

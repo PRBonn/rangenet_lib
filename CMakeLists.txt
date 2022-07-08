@@ -11,7 +11,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 set(CMAKE_CXX_FLAGS_RELEASE "-g -O3")
 
 ## Use C++11
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 14)
 
 # check flags
 message("Build type: ${CMAKE_BUILD_TYPE}")
@@ -114,7 +114,7 @@ set(rangenet_lib_SOURCES src/net.cpp src/selector.cpp)
 
 if(TENSORRT_FOUND)
   message("Building TensorRT")
-  list(APPEND rangenet_lib_SOURCES src/netTensorRT.cpp)
+  list(APPEND rangenet_lib_SOURCES src/netTensorRT.cpp )
 endif()
 
 # make the library and link stuff to it
