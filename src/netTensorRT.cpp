@@ -9,7 +9,7 @@
 #include <chrono>
 #include <fstream>
 #include <limits>
-
+#include <boost/container/vector.hpp>
 namespace rangenet {
 namespace segmentation {
 
@@ -33,13 +33,13 @@ NetTensorRT::NetTensorRT(const std::string& model_path)
   // try to deserialize the engine
   try {
     deserializeEngine(engine_path);
-  } catch (std::exception e) {
+  } catch (std::exception* e) {
     std::cout << "Could not deserialize TensorRT engine. " << std::endl
               << "Generating from sratch... This may take a while..."
               << std::endl;
 
     // destroy crap from engine
-    if (_engine) _engine->destroy();
+    if (_engine) delete _engine;
 
   } catch (...) {
     throw std::runtime_error("Unknown TensorRT exception. Giving up.");
@@ -95,7 +95,7 @@ NetTensorRT::~NetTensorRT() {
 
   // destroy the execution context
   if (_context) {
-    _context->destroy();
+    delete _context;
   }
 
   if (_verbose) {
@@ -104,7 +104,7 @@ NetTensorRT::~NetTensorRT() {
 
   // destroy the engine
   if (_engine) {
-    _engine->destroy();
+    delete _engine;
   }
 
   if (_verbose) {
@@ -124,14 +124,13 @@ std::vector<std::vector<float>> NetTensorRT::doProjection(const std::vector<floa
   float fov_down = _fov_down / 180.0 * M_PI;  // field of view down in radians
   float fov = std::abs(fov_down) + std::abs(fov_up); // get field of view total in radians
 
-  std::vector<float> ranges;
-  std::vector<float> xs;
-  std::vector<float> ys;
-  std::vector<float> zs;
-  std::vector<float> intensitys;
-
-  std::vector<float> proj_xs_tmp;
-  std::vector<float> proj_ys_tmp;
+  boost::container::vector<float> ranges;
+  boost::container::vector<float> xs;
+  boost::container::vector<float> ys;
+  boost::container::vector<float> zs;
+  boost::container::vector<float> intensitys;
+  boost::container::vector<float> proj_xs_tmp;
+  boost::container::vector<float> proj_ys_tmp;
 
   for (uint32_t i = 0; i < num_points; i++) {
     float x = scan[4 * i];
@@ -174,9 +173,9 @@ std::vector<std::vector<float>> NetTensorRT::doProjection(const std::vector<floa
   proj_ys = proj_ys_tmp;
 
   // order in decreasing depth
-  std::vector<size_t> orders = sort_indexes(ranges);
-  std::vector<float> sorted_proj_xs;
-  std::vector<float> sorted_proj_ys;
+  boost::container::vector<size_t> orders = sort_indexes(ranges);
+  boost::container::vector<float> sorted_proj_xs;
+  boost::container::vector<float> sorted_proj_ys;
   std::vector<std::vector<float>> inputs;
 
   for (size_t idx : orders){
@@ -278,7 +277,7 @@ std::vector<std::vector<float>> NetTensorRT::infer(const std::vector<float>& sca
   }
 
 
-  _context->enqueue(1, &_deviceBuffers[_inBindIdx], _cudaStream, nullptr);
+  _context->enqueueV2(&_deviceBuffers[_inBindIdx], _cudaStream, nullptr);
 
   if (_verbose) {
     CUDA_CHECK(cudaStreamSynchronize(_cudaStream));
@@ -449,11 +448,11 @@ void NetTensorRT::deserializeEngine(const std::string& engine_path) {
             << std::endl;
 
   // because I use onnx-tensorRT i have to use their plugin factory
-  nvonnxparser::IPluginFactory* plug_fact =
-      nvonnxparser::createPluginFactory(_gLogger);
+  // nvinfer1::IPluginV2* plug_fact =
+  //     nvinfer1::IPluginCreator::createPlugin(_gLogger);
 
   // Now deserialize
-  _engine = infer->deserializeCudaEngine(modelMem, modelSize, plug_fact);
+  _engine = infer->deserializeCudaEngine(modelMem, modelSize);
 
   free(modelMem);
   if (_engine) {
@@ -497,36 +496,46 @@ void NetTensorRT::generateEngine(const std::string& onnx_path) {
   std::cout << "Trying to generate trt engine from : " << onnx_path
             << std::endl;
 
+
   // create inference builder
-  IBuilder* builder = createInferBuilder(_gLogger);
+    auto builder = std::unique_ptr<nvinfer1::IBuilder>(nvinfer1::createInferBuilder(_gLogger));
+    if (!builder)
+    {
+        return ;
+    }
+      auto buildercfg = std::unique_ptr<nvinfer1::IBuilderConfig>(builder->createBuilderConfig());
+    if (!buildercfg)
+    {
+        return ;
+    }
 
   // set optimization parameters here
   // CAN I DO HALF PRECISION (and report to user)
   std::cout << "Platform ";
   if (builder->platformHasFastFp16()) {
     std::cout << "HAS ";
-    builder->setFp16Mode(true);
+    buildercfg->setFlag(BuilderFlag::kFP16);
   } else {
     std::cout << "DOESN'T HAVE ";
-    builder->setFp16Mode(false);
+    // buildercfg->setFp16Mode(false);
   }
   std::cout << "fp16 support." << std::endl;
   // BATCH SIZE IS ALWAYS ONE
-  builder->setMaxBatchSize(1);
+  // builder->setMaxBatchSize(1);
 
 // if using DLA, set the desired core before deserialization occurs
 #if NV_TENSORRT_MAJOR >= 5 &&                             \
     !(NV_TENSORRT_MAJOR == 5 && NV_TENSORRT_MINOR == 0 && \
       NV_TENSORRT_PATCH == 0)
   if (DEVICE_DLA_0 || DEVICE_DLA_1) {
-    builder->setDefaultDeviceType(DeviceType::kDLA);
-    builder->allowGPUFallback(true);
+    buildercfg->setDefaultDeviceType(DeviceType::kDLA);
+    // buildercfg->allowGPUFallback(true);
     if (DEVICE_DLA_0) {
       std::cout << "Successfully selected DLA core 0." << std::endl;
-      builder->setDLACore(0);
+      buildercfg->setDLACore(0);
     } else if (DEVICE_DLA_0) {
       std::cout << "Successfully selected DLA core 1." << std::endl;
-      builder->setDLACore(1);
+      buildercfg->setDLACore(1);
     }
   } else {
     std::cout << "No DLA selected." << std::endl;
@@ -534,11 +543,17 @@ void NetTensorRT::generateEngine(const std::string& onnx_path) {
 #endif
 
   // create a network builder
-  INetworkDefinition* network = builder->createNetwork();
+const auto explicitBatch = 1U << static_cast<uint32_t>(NetworkDefinitionCreationFlag::kEXPLICIT_BATCH);
+auto network = std::unique_ptr<nvinfer1::INetworkDefinition>(builder->createNetworkV2(explicitBatch));
+    if (!network)
+    {
+        return ;
+    }
 
   // generate a parser to get weights from onnx file
   nvonnxparser::IParser* parser =
       nvonnxparser::createParser(*network, _gLogger);
+
 
   // finally get from file
   if (!parser->parseFromFile(onnx_path.c_str(),
@@ -553,10 +568,25 @@ void NetTensorRT::generateEngine(const std::string& onnx_path) {
   for (unsigned long ws_size = MAX_WORKSPACE_SIZE;
        ws_size >= MIN_WORKSPACE_SIZE; ws_size /= 2) {
     // set size
-    builder->setMaxWorkspaceSize(ws_size);
+    buildercfg->setMemoryPoolLimit( nvinfer1::MemoryPoolType::kWORKSPACE,ws_size);
 
-    // try to build
-    _engine = builder->buildCudaEngine(*network);
+    buildercfg->setFlag(BuilderFlag::kFP16);
+
+
+    std::unique_ptr<IHostMemory> plan{builder->buildSerializedNetwork(*network, *buildercfg)};
+    if (!plan)
+    {
+        return ;
+    }
+
+    std::unique_ptr<IRuntime> runtime{createInferRuntime(_gLogger)};
+    if (!runtime)
+    {
+        return ;
+    }
+
+    _engine = runtime->deserializeCudaEngine(plan->data(), plan->size());
+ 
     if (!_engine) {
       std::cerr << "Failure creating engine from ONNX model" << std::endl
                 << "Current trial size is " << ws_size << std::endl;
@@ -567,6 +597,7 @@ void NetTensorRT::generateEngine(const std::string& onnx_path) {
       break;
     }
   }
+
 
   // final check
   if (!_engine) {

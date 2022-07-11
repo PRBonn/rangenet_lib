@@ -8,14 +8,15 @@
 // For plugin factory
 #include <NvInfer.h>
 #include <NvOnnxParser.h>
-#include <NvOnnxParserRuntime.h>
+//#include <NvOnnxParserRuntime.h>
 #include <cuda_runtime.h>
 #include <fstream>
 #include <ios>
 #include <chrono>
 #include <numeric>
 #include "net.hpp"
-
+#include<boost/container/vector.hpp>
+#include <boost/range/algorithm.hpp>
 #define MAX_WORKSPACE_SIZE \
   (1UL << 33)  // gpu workspace size (8gb is pretty good)
 #define MIN_WORKSPACE_SIZE (1UL << 20)  // gpu workspace size (pretty bad)
@@ -42,23 +43,23 @@ namespace segmentation {
 class Logger : public ILogger {
  public:
   void set_verbosity(bool verbose) { _verbose = verbose; }
-  void log(Severity severity, const char* msg) override {
+  void log(Severity severity, const char* msg) noexcept {
     if (_verbose) {
       switch (severity) {
         case Severity::kINTERNAL_ERROR:
-          std::cerr << "INTERNAL_ERROR: ";
+          std::cout << "INTERNAL_ERROR: ";
           break;
         case Severity::kERROR:
-          std::cerr << "ERROR: ";
+          std::cout << "ERROR: ";
           break;
         case Severity::kWARNING:
-          std::cerr << "WARNING: ";
+          std::cout << "WARNING: ";
           break;
         case Severity::kINFO:
-          std::cerr << "INFO: ";
+          std::cout << "INFO: ";
           break;
         default:
-          std::cerr << "UNKNOWN: ";
+          std::cout << "UNKNOWN: ";
           break;
       }
       std::cout << msg << std::endl;
@@ -95,15 +96,14 @@ class NetTensorRT : public Net {
    * @return     argsorted idxes
    */
   template <typename T>
-  std::vector<size_t> sort_indexes(const std::vector<T> &v) {
+boost::container::vector<size_t> sort_indexes(const boost::container::vector<T> &v) {
 
     // initialize original index locations
-    std::vector<size_t> idx(v.size());
+    boost::container::vector<size_t> idx(v.size());
     std::iota(idx.begin(), idx.end(), 0);
 
     // sort indexes based on comparing values in v. >: decrease <: increase
-    std::sort(idx.begin(), idx.end(),
-         [&v](size_t i1, size_t i2) {return v[i1] > v[i2];});
+    boost::range::sort(idx,[&v](size_t i1, size_t i2) {return v[i1] > v[i2];});
 
     return idx;
   }
@@ -183,8 +183,8 @@ class NetTensorRT : public Net {
   uint _inBindIdx;
   uint _outBindIdx;
 
-  std::vector<float> proj_xs; // stope a copy in original order
-  std::vector<float> proj_ys;
+ boost::container::vector<float> proj_xs; // stope a copy in original order
+ boost::container::vector<float> proj_ys;
 
   // explicitly set the invalid point for both inputs and outputs
   std::vector<float> invalid_input =  {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};

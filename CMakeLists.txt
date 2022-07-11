@@ -114,7 +114,7 @@ set(rangenet_lib_SOURCES src/net.cpp src/selector.cpp)
 
 if(TENSORRT_FOUND)
   message("Building TensorRT")
-  list(APPEND rangenet_lib_SOURCES src/netTensorRT.cpp)
+  list(APPEND rangenet_lib_SOURCES src/netTensorRT.cpp )
 endif()
 
 # make the library and link stuff to it
