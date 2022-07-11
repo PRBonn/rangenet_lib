@@ -6,7 +6,7 @@ find_library(NVINFER  NAMES nvinfer)
 find_library(NVINFERPLUGIN NAMES nvinfer_plugin)
 find_library(NVPARSERS NAMES nvparsers)
 find_library(NVONNXPARSER NAMES nvonnxparser)
-find_library(NVONNXPARSERRUNTIME NAMES nvonnxparser_runtime)
+
 
 # If it is ALL there, export libraries as a single package
 if(CUDA_FOUND AND NVINFER AND NVINFERPLUGIN AND NVPARSERS AND NVONNXPARSER )
@@ -18,7 +18,6 @@ if(CUDA_FOUND AND NVINFER AND NVINFERPLUGIN AND NVPARSERS AND NVONNXPARSER )
   message("NVPARSERS: ${NVPARSERS}")
   message("NVONNXPARSER: ${NVONNXPARSER}")
   message("NVONNXPARSERRUNTIME: ${NVONNXPARSERRUNTIME}")
-  # list(APPEND TENSORRT_LIBRARIES ${CUDA_LIBRARIES} nvinfer nvinfer_plugin nvparsers nvonnxparser nvonnxparser_runtime)
   list(APPEND TENSORRT_LIBRARIES ${CUDA_LIBRARIES} nvinfer nvinfer_plugin nvparsers nvonnxparser)
   message("All togheter now (libs): ${TENSORRT_LIBRARIES}")
   list(APPEND TENSORRT_INCLUDE_DIRS ${CUDA_INCLUDE_DIRS})
